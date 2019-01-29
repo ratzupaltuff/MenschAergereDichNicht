@@ -23,4 +23,8 @@ public class Boardgame {
         }
     }
 
+    public String returnPositionsForPlayer() {
+        return board.returnPositionsForPlayer();
+    }
+
 }

@@ -2,6 +2,7 @@ package boardgame;
 
 public class Board {
     private Player[] players;
+    private int turnOfPlayerNumber;
 
     /**
      * 
@@ -9,6 +10,7 @@ public class Board {
     public Board() {
         Player[] players = {new Player(0), new Player(1), new Player(2), new Player(3) };
         this.players = players;
+        turnOfPlayerNumber = 0;
     }
 
     private boolean isTokenOnField(int field) {
@@ -30,7 +32,7 @@ public class Board {
         }
         return false;
     }
-    
+
     /**
      * @param playerNr which player should be returned?
      * @return the player that matches the playerNr
@@ -51,6 +53,28 @@ public class Board {
             return true;
         }
         return false;
+    }
+
+    /**
+     * 
+     */
+    public void endTurn() {
+        if (turnOfPlayerNumber < 3) {
+            turnOfPlayerNumber++;
+        } else {
+            turnOfPlayerNumber = 0;
+        } 
+        //TODO: check if sombody has won
+    }
+
+    /**
+     * @return String with possible moves
+     */
+    public String returnPositionsForPlayer() {
+        for (Token token : players[turnOfPlayerNumber].getTokens()) {
+            
+        }
+        return null;
     }
 
 }

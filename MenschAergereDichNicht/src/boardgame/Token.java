@@ -5,7 +5,10 @@ package boardgame;
  *
  */
 public class Token {
+    //normal fields from 0-39 and from lowest to highest the special fields are -4 to -1
     private byte position;
+    
+    
     
     /**
      * @param position initial position of the token
@@ -33,6 +36,10 @@ public class Token {
      */
     public void setPosition(byte position) {
         this.position = position;
+    }
+    
+    public String getSpecialRepresentativeCharacter() {
+        return SpecialPositions.
     }
     
     /**

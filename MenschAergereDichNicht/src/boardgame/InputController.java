@@ -27,10 +27,43 @@ public class InputController {
         case "start":
             start(inputArrayStrings);
             break;
+
+        case "roll":
+
+            break;
         default:
             Terminal.printError("command not found");
 
         }
+    }
+
+    /**
+     * @param inputArrayString input
+     */
+    public void roll(String[] inputArrayString) {
+        if (isGameStarted()) {
+            if (inputArrayString.length == 2) {
+                if (inputArrayString[1].matches("^[1-6]$")) {
+                    Terminal.printLine(game.returnPositionsForPlayer());
+                } else {
+                    Terminal.printError("you have to specify a value between one and six");
+                }
+            } else {
+                Terminal.printError("you have to specify one value");
+            }
+        } else {
+            Terminal.printError("game is not running");
+        }
+    }
+
+    /**
+     * @return true if game is started
+     */
+    public boolean isGameStarted() {
+        if (game != null) {
+            return true;
+        }
+        return false;
     }
 
     /**
@@ -69,9 +102,10 @@ public class InputController {
                 }
                 int[][] startArray = parseStartString(positionsOfTokenOfPlayerStrings);
                 if (startArray.length == 4) {
-                    game = new Boardgame(startArray);
+                    game = new Boardgame(startArray); // TODO: check if there are two players on the same field
+                    Terminal.printLine("OK");
                 } else {
-                    
+
                 }
             } else {
                 Terminal.printError("not entered starting positions for exactly four players");
@@ -91,56 +125,61 @@ public class InputController {
         for (int playerNr = 0; playerNr < 4; playerNr++) {
             for (int tokenNr = 0; tokenNr < 4; tokenNr++) {
                 String currentString = positionsOfTokens[playerNr][tokenNr];
-                if (currentString.matches("(^[0-9]$|^[1-3][0-9]$|^40$|^[A-DS][BGRY]$)")) {
+                if (currentString.matches("(^[0-9]$|^[1-3][0-9]$|^[A-DS][BGRY]$)")) {
                     if (currentString.matches("(^[0-9]$|^[1-3][0-9]$|^40$)")) {
                         parsedStartString[playerNr][tokenNr] = Integer.parseInt(currentString);
                     } else if (currentString.matches("[A-DS][BGRY]$")) {
                         switch (currentString.substring(currentString.length() - 1)) {
-                        case "Y": 
+                        case "Y":
                             if (tokenNr == 2) {
-                                parsedStartString[playerNr][tokenNr] 
-                                        = specialFieldToValue(currentString.substring(0, 1));
+                                parsedStartString[playerNr][tokenNr] = specialFieldToValue(
+                                        currentString.substring(0, 1));
                             } else {
-                                return new int[][]{{}};
+                                return new int[][] { {} };
                             }
                             break;
                         case "R":
                             if (tokenNr == 0) {
-                                parsedStartString[playerNr][tokenNr] 
-                                        = specialFieldToValue(currentString.substring(0, 1));
+                                parsedStartString[playerNr][tokenNr] = specialFieldToValue(
+                                        currentString.substring(0, 1));
                             } else {
-                                return new int[][]{{}};
+                                return new int[][] { {} };
                             }
                             break;
                         case "G":
                             if (tokenNr == 3) {
-                                parsedStartString[playerNr][tokenNr] 
-                                        = specialFieldToValue(currentString.substring(0, 1));
+                                parsedStartString[playerNr][tokenNr] = specialFieldToValue(
+                                        currentString.substring(0, 1));
                             } else {
-                                return new int[][]{{}};
+                                return new int[][] { {} };
                             }
                             break;
                         case "B":
                             if (tokenNr == 1) {
-                                parsedStartString[playerNr][tokenNr] 
-                                        = specialFieldToValue(currentString.substring(0, 1));
+                                parsedStartString[playerNr][tokenNr] = specialFieldToValue(
+                                        currentString.substring(0, 1));
                             } else {
-                                return new int[][]{{}};
+                                return new int[][] { {} };
                             }
                             break;
                         default:
                             Terminal.printError(
                                     "invalid startposition value for player " + playerNr + " and token " + tokenNr);
                         }
+                    } else {
+                        Terminal.printError(
+                                "One of the Values is neither a digit between 0 and 40 nor a String with the "
+                                        + "first letter A-D or S and the Last letter one of the following: RBGY");
                     }
                 }
             }
         }
         return parsedStartString;
     }
-    
+
     /**
-     * @param fieldString string which should be converted to internal representation
+     * @param fieldString string which should be converted to internal
+     *                    representation
      * @return value from -4 to 0 for internal usage
      */
     public int specialFieldToValue(String fieldString) {
@@ -153,7 +192,7 @@ public class InputController {
             return -3;
         case "D":
             return -4;
-        case "S":  //for visibility purposes
+        case "S": // for visibility purposes
             return 0;
         default:
             return 0;
