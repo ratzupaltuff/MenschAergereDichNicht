@@ -73,6 +73,27 @@ public class Player {
     }
 
     /**
+     * @param tokenNr        tokennumber
+     * @param globalPosition position to set to
+     */
+    public void setToken(int tokenNr, int globalPosition) {
+        byte position = globalPositionToRelativePosition(globalPosition);
+        tokens[tokenNr].setPosition(position);
+    }
+    
+    private byte globalPositionToRelativePosition(int globalPosition) {
+        int position;
+        if (globalPosition > 0) {
+            position = (globalPosition + getOffset()) % 40;
+        } else if (globalPosition < 0) {
+            position = globalPosition;
+        } else {
+            position = 0;
+        }
+        return (byte) position;
+    }
+
+    /**
      * @param globalField position, at which a token is, which should be resetted
      */
     public void resetTokenAtPosition(int globalField) {
