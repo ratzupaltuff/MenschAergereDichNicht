@@ -77,7 +77,14 @@ public class InputController {
         if (isGameStarted()) {
             if (inputArrayString.length == 2) {
                 if (inputArrayString[1].matches("^[1-6]$")) {
-                    Terminal.printLine(game.returnPossibleMoveForPlayer(Integer.parseInt(inputArrayString[1])));
+                    if (game.isRollable()) {
+                        String returnString = game.returnPossibleMoveForPlayer(Integer.parseInt(inputArrayString[1]));
+                        if (!returnString.equals("")) {
+                            Terminal.printLine(returnString);
+                        }
+                    } else {
+                        Terminal.printError("you have already rolled the dice");
+                    }
                 } else {
                     Terminal.printError("you have to specify a value between one and six");
                 }
@@ -159,7 +166,7 @@ public class InputController {
             for (int tokenNr = 0; tokenNr < 4; tokenNr++) {
                 String currentString = positionsOfTokens[playerNr][tokenNr];
                 if (currentString.matches("(^[0-9]$|^[1-3][0-9]$|^[A-DS][BGRY]$)")) {
-                    if (currentString.matches("(^[0-9]$|^[1-3][0-9]$|^40$)")) {
+                    if (currentString.matches("(^[0-9]$|^[1-3][0-9]$)")) {
                         parsedStartString[playerNr][tokenNr] = Integer.parseInt(currentString);
                     } else if (currentString.matches("[A-DS][BGRY]$")) {
                         switch (currentString.substring(currentString.length() - 1)) {
@@ -229,6 +236,34 @@ public class InputController {
             return -1;
         default:
             return 0;
+        }
+    }
+
+    private void move(String[] inputArrayString) {
+        if (isGameStarted()) {
+            if (inputArrayString.length == 2) {
+                String currentString = inputArrayString[1];
+                int internalValue;
+                int playerNr = game.getCurrentPlayerNr();
+                if (inputArrayString[1].matches("(^[0-9]$|^[1-3][0-9]$|^[A-DS][BGRY]$)")) {
+                    if (currentString.matches("(^[0-9]$|^[1-3][0-9]$)")) {
+                        internalValue = Integer.parseInt(currentString);
+                    } else if (currentString.matches("[A-DS][BGRY]$")) {
+                        String[] possibleMoveStrings = game.getCurrentPossibleMoves();
+                        for (int tokenNr = 0; tokenNr < 4; tokenNr++) {
+                            if(possibleMoveStrings[tokenNr].equals(currentString)) {
+                                game.tryToMoveTokenToField(specialFieldToValue(currentString));
+                            }
+                        }
+                    }
+                } else {
+                    Terminal.printError("not a valid value");
+                }
+            } else {
+                Terminal.printError("not exactly one parameter specified");
+            }
+        } else {
+            Terminal.printError("game not started");
         }
     }
 

@@ -16,16 +16,16 @@ public class Player {
 
         switch (playerNr) {
         case 0:
-            color = PlayerColors.red;
+            color = PlayerColors.RED;
             break;
         case 1:
-            color = PlayerColors.blue;
+            color = PlayerColors.BLUE;
             break;
         case 2:
-            color = PlayerColors.green;
+            color = PlayerColors.GREEN;
             break;
         default: // only called if playeriNr is 3
-            color = PlayerColors.yellow;
+            color = PlayerColors.YELLOW;
         }
     }
 

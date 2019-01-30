@@ -7,6 +7,8 @@ package boardgame;
 public class Board {
     private Player[] players;
     private int turnOfPlayerNumber;
+    private int lastRoll;
+    private int hasTurnsLeft;
 
     /**
      * 
@@ -15,6 +17,8 @@ public class Board {
         Player[] players = { new Player(0), new Player(1), new Player(2), new Player(3) };
         this.players = players;
         turnOfPlayerNumber = 0;
+        lastRoll = 0;
+        hasTurnsLeft = 1;
     }
 
     private boolean isTokenOnField(int field) {
@@ -63,11 +67,25 @@ public class Board {
      * 
      */
     private void endTurn() {
-        if (turnOfPlayerNumber < 3) {
-            turnOfPlayerNumber++;
+        if (lastRoll != 6) {
+            if (hasTurnsLeft <= 1) {
+                if (turnOfPlayerNumber < 3) {
+                    turnOfPlayerNumber++;
+                } else {
+                    turnOfPlayerNumber = 0;
+                }
+                if (!hasThreeRolls()) {
+                    hasTurnsLeft = 1;
+                } else {
+                    hasTurnsLeft = 3;
+                }
+            } else {
+                hasTurnsLeft--;
+            }
         } else {
-            turnOfPlayerNumber = 0;
+            hasTurnsLeft = 1;
         }
+        lastRoll = 0;
         // TODO: check if sombody has won
     }
 
@@ -77,6 +95,7 @@ public class Board {
      * @return String with possible moves depending on the steps
      */
     protected String returnPositionsForPlayer(int numberOfSteps) {
+        lastRoll = numberOfSteps;
         boolean thereWasAlreadyANullPosition = false;
         String returnString = "";
         returnString += players[turnOfPlayerNumber].checkIfTokenCanBeMovedAndReturnMoveString(0, numberOfSteps);
@@ -103,4 +122,54 @@ public class Board {
         return returnString;
     }
 
+    /**
+     * @return number of the player who is on the row (values from 0 to 3)
+     */
+    protected int getTurnsPlayerId() {
+        return turnOfPlayerNumber;
+    }
+
+    /**
+     * @return last value of the dice, 0 if the dice hasnt rolled this turn
+     */
+    protected int getLastRoll() {
+        return lastRoll;
+    }
+
+    /**
+     * @return yes if no token is on the field
+     */
+    protected boolean hasThreeRolls() {
+        for (int tokenNr = 0; tokenNr < 4; tokenNr++) {
+            if (players[turnOfPlayerNumber].getTokens()[tokenNr].getPosition() >= 0) {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    /**
+     * @param playerNr player to check if won
+     * @return true if player has won, false else
+     */
+    protected boolean hasPlayerWon(int playerNr) {
+        for (int tokenNr = 0; tokenNr < 4; tokenNr++) {
+            if (players[playerNr].getTokens()[tokenNr].getPosition() >= -1) {
+                return false;
+            }
+        }
+        return true;
+    }
+    
+    /**
+     * @return -1 if nobody won and the playernumber if somebody won
+     */
+    protected int whichPlayerHasWon() {
+        for (int playerNr = 0; playerNr < 4; playerNr++) {
+            if (hasPlayerWon(playerNr)) {
+                return playerNr;
+            }
+        }
+        return -1;
+    }
 }
