@@ -4,7 +4,7 @@ enum SpecialPositions {
     /**
      * 
      */
-    start(0, "S"), a(1, "A"), b(2, "B"), c(3, "C"), d(4, "D");
+    start(0, "S"), a(-4, "A"), b(-3, "B"), c(-2, "C"), d(-1, "D");
     private int positionNumber;
     private String representativeLetter;
 
@@ -25,7 +25,7 @@ enum SpecialPositions {
      * @param position postion which should be converted to the string
      * @return the string representing the position
      */
-    public String intLowerThanOneToSpecialCharacter(int position) {
+    public static String intLowerThanOneToSpecialCharacter(int position) {
         if (start.positionNumber == position) {
             return start.getLetterCapsString();
         } else if (a.positionNumber == position) {

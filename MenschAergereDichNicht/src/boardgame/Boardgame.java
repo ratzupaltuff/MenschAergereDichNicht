@@ -5,7 +5,7 @@ public class Boardgame {
     private Board board;
 
     /**
-     *  default constructer which creates a new boardgame instance
+     *  default constructor which creates a new boardgame instance
      */
     public Boardgame() {
         board = new Board();
@@ -23,6 +23,9 @@ public class Boardgame {
         }
     }
 
+    /**
+     * @return positions of player tokens
+     */
     public String returnPositionsForPlayer() {
         return board.returnPositionsForPlayer();
     }

@@ -6,7 +6,7 @@ public class InputController {
     private Boardgame game;
 
     /**
-     * 
+     * doesn't terminate until "quit" is typed, calls inputParser on every Input
      */
     public void begin() {
         String input;
@@ -17,23 +17,37 @@ public class InputController {
     }
 
     /**
+     * determines which method should be called, depending on the command entered
+     * 
      * @param input input String
      */
     public void inputParser(String input) {
         String[] inputArrayStrings = input.split(" ");
+        
+        if (inputArrayStrings.length > 0) { //catch empty strings (with spaces)
+            switch (inputArrayStrings[0]) {
 
-        switch (inputArrayStrings[0]) {
+            case "start":
+                start(inputArrayStrings);
+                break;
 
-        case "start":
-            start(inputArrayStrings);
-            break;
+            case "roll":
 
-        case "roll":
+                break;
+                
+            case "move":
 
-            break;
-        default:
-            Terminal.printError("command not found");
+                break;
+                
+            case "print":
 
+                break;
+            default:
+                Terminal.printError("command not found");
+
+            }
+        } else {
+            Terminal.printError("command should contain text");
         }
     }
 
