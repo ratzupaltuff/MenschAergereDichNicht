@@ -4,75 +4,57 @@ public class Player {
     private Token[] tokens = new Token[4];
     private PlayerColors color;
 
-    enum PlayerColors {
-        /**
-         * 
-         */
-        red(0, 0, "R"), blue(1, 10, "B"), yellow(2, 20, "Y"), green(3, 30, "G");
-        private int playerNr;
-        private int offset;
-        private String colorFirstLetterCapsString;
-
-        private PlayerColors(int playerNr, int offset, String colorFirstLetterCapsString) {
-            this.playerNr = playerNr;
-            this.offset = offset;
-            this.colorFirstLetterCapsString = colorFirstLetterCapsString;
-        }
-        
-        /**
-         * @return first letter of color string (in caps)
-         */
-        public String getFirstLetterCapsString() {
-            return colorFirstLetterCapsString;
-        }
-    }
-
     /**
-     * @param nr number of player
+     * constructor which creates 4 new token and initializes them with values zero
+     * writes the player color depending on the number which is transfered
+     * 
+     * @param playerNr number of player (from 0 to 3)
      */
-    public Player(int nr) {
+    public Player(int playerNr) {
         Token[] tokens = {new Token(), new Token(), new Token(), new Token() };
         this.tokens = tokens;
-        // this.color = new PlayerColors(PlayerColors.)
-        switch (nr) {
+
+        switch (playerNr) {
         case 0:
             color = PlayerColors.red;
+            break;
         case 1:
             color = PlayerColors.blue;
+            break;
         case 2:
-            color = PlayerColors.yellow;
-        case 3:
             color = PlayerColors.green;
-        default: // error
+            break;
+        default: // only called if playeriNr is 3
+            color = PlayerColors.yellow;
         }
     }
 
     /**
      * @return tokens of player
      */
-    public Token[] getTokens() {
+    protected Token[] getTokens() {
         return tokens;
     }
 
     /**
      * @param tokens set tokens of player to this value
      */
-    public void setTokens(Token[] tokens) {
+    private void setTokens(Token[] tokens) {
         this.tokens = tokens;
     }
 
     /**
      * @return number of player
      */
-    public int getPlayerNr() {
-        return color.playerNr;
+    protected int getPlayerNr() {
+        return color.getPlayerNr();
     }
 
     /**
      * @param field field to look for tokens
      * @return true if there is a token at the field, else false
      */
-    public boolean isTokenAtField(int field) {
+    protected boolean isTokenAtField(int field) {
         for (Token token : tokens) {
             if (token.getPosition() == field) {
                 return true;
@@ -85,7 +67,7 @@ public class Player {
      * @param tokenNr        tokennumber
      * @param globalPosition position to set to
      */
-    public void setToken(int tokenNr, int globalPosition) {
+    protected void setToken(int tokenNr, int globalPosition) {
         byte position = globalPositionToRelativePosition(globalPosition);
         tokens[tokenNr].setPosition(position);
     }
@@ -123,7 +105,7 @@ public class Player {
     /**
      * @param globalField position, at which a token is, which should be resetted
      */
-    public void resetTokenAtPosition(int globalField) {
+    private void resetTokenAtPosition(int globalField) {
         int localPosition = (globalField + getOffset()) % 40;
         for (Token token : tokens) {
             if (token.getPosition() == localPosition) {
@@ -138,36 +120,64 @@ public class Player {
      * @return if token can move x steps
      */
     private boolean canTokenMoveBy(int token, int steps) {
-        return isTokenAtField(getFieldPlusNumber(token, steps));
+        /*
+         * if (tokens[token].getPosition() == -1) { if (steps != 6) { return false; }
+         * else { return !isTokenAtField(getFieldPlusNumber(token, 1)); } } else {
+         */
+        if (tokens[token].getPosition() > -1) { // normal fields
+            return !isTokenAtField(getFieldPlusNumber(token, steps));
+        } else if ((tokens[token].getPosition() + steps) < -1) { // last four home fields
+            return !isTokenAtField(getFieldPlusNumber(token, steps));
+        } else if (tokens[token].getPosition() == -1) { // starting field
+            if (steps == 6) {
+                return !isTokenAtField(getFieldPlusNumber(token, steps));
+            } else {
+                return false;
+            }
+        } else { // if token is at a home field, and cannot move x steps
+            return false;
+        }
+
     }
 
     /**
+     * getter for the offset of the this player on the board
+     * 
      * @return int, which identicates the offset on the gameboard
      */
-    public int getOffset() {
-        return color.offset;
+    private int getOffset() {
+        return color.getOffset();
     }
 
     /**
-     * @param startingField value between -4 and 39
+     * method which determines on which field a token lands, if its moved by 5,
+     * returns 0 if token cant be moved x steps
+     * 
+     * @param startingField value between -5 and 39
      * @param steps         value between 1 and 6
-     * @return value 0 for no possibility to move, else return position of token at
-     *         startingFiled going x steps
+     * @return value -10 for no possibility to move, else return position of token
+     *         at startingFiled going x steps
      */
-    public int getFieldPlusNumber(int startingField, int steps) {
+    private int getFieldPlusNumber(int startingField, int steps) {
         if (startingField >= 0) {
             if (startingField + steps <= 39) {
                 return startingField + steps;
             } else if (startingField + steps <= 43) {
                 return startingField + steps - 44;
             } else {
-                return 0; // can't be reached, because steps is only called with values higher than zero
+                return -10; // can't be reached, because steps is only called with values higher than zero
             }
-        } else {
+        } else if (startingField < -1) {
             if (startingField + steps < 0) {
                 return startingField + steps;
             } else {
+                return -10;
+            }
+        } else {
+            if (steps == 6) {
                 return 0;
+            } else {
+                return -1;
             }
         }
     }
@@ -177,13 +187,35 @@ public class Player {
      * @param steps steps to be moved/checked
      * @return empty string if move isn't possible else the string of the move
      */
-    public String checkIfTokenCanBeMovedAndReturnMoveString(int token, int steps) {
+    protected String checkIfTokenCanBeMovedAndReturnMoveString(int token, int steps) {
+        String returnString = "";
         if (canTokenMoveBy(token, steps)) {
             int positionOfCurrentToken = getTokens()[token].getPosition();
-            return positionOfCurrentToken + "-" + getFieldPlusNumber(positionOfCurrentToken, steps);
-        } else {
-            return "";
+            returnString = convertLocalPositionToGlobalString(positionOfCurrentToken) + "-";
+            returnString += convertLocalPositionToGlobalString(getFieldPlusNumber(positionOfCurrentToken, steps));
         }
+        return returnString;
+
+    }
+
+    private String convertLocalPositionToGlobalString(int localPosition) {
+        if (localPosition >= 0) {
+            return Integer.toString((localPosition + getOffset()) % 40);
+        } else {
+            return Token.getSpecialRepresentativeCharacter(localPosition) + color.getFirstLetterCapsString();
+        }
+    }
+    
+    /**
+     * @return string
+     */
+    public String toString() {
+        String returnString;
+        returnString = convertLocalPositionToGlobalString(tokens[0].getPosition());
+        for (int tokenNr = 1; tokenNr < 4; tokenNr++) {
+            returnString += "," + convertLocalPositionToGlobalString(tokens[tokenNr].getPosition());
+        }
+        return returnString;
     }
 
 }

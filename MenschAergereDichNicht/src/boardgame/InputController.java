@@ -1,5 +1,9 @@
 package boardgame;
 
+/**
+ * @author ratzupaltuff
+ *
+ */
 import edu.kit.informatik.*;
 
 public class InputController {
@@ -23,8 +27,8 @@ public class InputController {
      */
     public void inputParser(String input) {
         String[] inputArrayStrings = input.split(" ");
-        
-        if (inputArrayStrings.length > 0) { //catch empty strings (with spaces)
+
+        if (inputArrayStrings.length > 0) { // catch empty strings (with spaces)
             switch (inputArrayStrings[0]) {
 
             case "start":
@@ -32,15 +36,15 @@ public class InputController {
                 break;
 
             case "roll":
-
+                roll(inputArrayStrings);
                 break;
-                
+
             case "move":
 
                 break;
-                
-            case "print":
 
+            case "print":
+                print(inputArrayStrings);
                 break;
             default:
                 Terminal.printError("command not found");
@@ -52,13 +56,28 @@ public class InputController {
     }
 
     /**
+     * @param inputArrayString command
+     */
+    public void print(String[] inputArrayString) {
+        if (isGameStarted()) {
+            if (inputArrayString.length == 1) {
+                Terminal.printLine(game.toString());
+            } else {
+                Terminal.printError("the print command needs no parameter, try again");
+            }
+        } else {
+            Terminal.printError("game is not running");
+        }
+    }
+
+    /**
      * @param inputArrayString input
      */
     public void roll(String[] inputArrayString) {
         if (isGameStarted()) {
             if (inputArrayString.length == 2) {
                 if (inputArrayString[1].matches("^[1-6]$")) {
-                    Terminal.printLine(game.returnPositionsForPlayer());
+                    Terminal.printLine(game.returnPossibleMoveForPlayer(Integer.parseInt(inputArrayString[1])));
                 } else {
                     Terminal.printError("you have to specify a value between one and six");
                 }
@@ -145,7 +164,7 @@ public class InputController {
                     } else if (currentString.matches("[A-DS][BGRY]$")) {
                         switch (currentString.substring(currentString.length() - 1)) {
                         case "Y":
-                            if (tokenNr == 2) {
+                            if (playerNr == 3) {
                                 parsedStartString[playerNr][tokenNr] = specialFieldToValue(
                                         currentString.substring(0, 1));
                             } else {
@@ -153,7 +172,7 @@ public class InputController {
                             }
                             break;
                         case "R":
-                            if (tokenNr == 0) {
+                            if (playerNr == 0) {
                                 parsedStartString[playerNr][tokenNr] = specialFieldToValue(
                                         currentString.substring(0, 1));
                             } else {
@@ -161,7 +180,7 @@ public class InputController {
                             }
                             break;
                         case "G":
-                            if (tokenNr == 3) {
+                            if (playerNr == 2) {
                                 parsedStartString[playerNr][tokenNr] = specialFieldToValue(
                                         currentString.substring(0, 1));
                             } else {
@@ -169,7 +188,7 @@ public class InputController {
                             }
                             break;
                         case "B":
-                            if (tokenNr == 1) {
+                            if (playerNr == 1) {
                                 parsedStartString[playerNr][tokenNr] = specialFieldToValue(
                                         currentString.substring(0, 1));
                             } else {
@@ -196,18 +215,18 @@ public class InputController {
      *                    representation
      * @return value from -4 to 0 for internal usage
      */
-    public int specialFieldToValue(String fieldString) {
+    private int specialFieldToValue(String fieldString) {
         switch (fieldString) {
         case "A":
-            return -1;
+            return -5;
         case "B":
-            return -2;
+            return -4;
         case "C":
             return -3;
         case "D":
-            return -4;
+            return -2;
         case "S": // for visibility purposes
-            return 0;
+            return -1;
         default:
             return 0;
         }

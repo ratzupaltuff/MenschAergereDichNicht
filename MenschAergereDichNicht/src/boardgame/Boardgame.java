@@ -1,11 +1,15 @@
 package boardgame;
 
+/**
+ * @author ratzupaltuff
+ *
+ */
 public class Boardgame {
 
     private Board board;
 
     /**
-     *  default constructor which creates a new boardgame instance
+     * default constructor which creates a new boardgame instance
      */
     public Boardgame() {
         board = new Board();
@@ -24,10 +28,23 @@ public class Boardgame {
     }
 
     /**
+     * @param numberOfSteps the value the dice shows, (from 1 to 6)
      * @return positions of player tokens
      */
-    public String returnPositionsForPlayer() {
-        return board.returnPositionsForPlayer();
+    public String returnPossibleMoveForPlayer(int numberOfSteps) {
+        return board.returnPositionsForPlayer(numberOfSteps);
+    }
+
+    /**
+     * @return string
+     */
+    public String toString() {
+        String returnString;
+        returnString = board.getPlayer(0).toString();
+        for (int playerNr = 1; playerNr < 4; playerNr++) {
+            returnString += "\n" + board.getPlayer(playerNr).toString();
+        }
+        return returnString;
     }
 
 }

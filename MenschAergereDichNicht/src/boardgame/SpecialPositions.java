@@ -1,10 +1,13 @@
 package boardgame;
-
+/**
+ * @author ratzupaltuff
+ *
+ */
 enum SpecialPositions {
     /**
      * 
      */
-    start(0, "S"), a(-4, "A"), b(-3, "B"), c(-2, "C"), d(-1, "D");
+    start(-1, "S"), a(-5, "A"), b(-4, "B"), c(-3, "C"), d(-2, "D");
     private int positionNumber;
     private String representativeLetter;
 
@@ -13,19 +16,19 @@ enum SpecialPositions {
         this.representativeLetter = representativeLetter;
     }
 
-    // TODO: 1. better to use getters in enum, or to use the value directly?
+    
     /**
      * @return first letter of color string (in caps)
      */
-    public String getLetterCapsString() {
+    protected String getLetterCapsString() {
         return representativeLetter;
     }
 
     /**
-     * @param position postion which should be converted to the string
+     * @param position position which should be converted to the string
      * @return the string representing the position
      */
-    public static String intLowerThanOneToSpecialCharacter(int position) {
+    protected static String intLowerThanOneToSpecialCharacter(int position) {
         if (start.positionNumber == position) {
             return start.getLetterCapsString();
         } else if (a.positionNumber == position) {

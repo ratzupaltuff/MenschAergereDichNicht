@@ -1,5 +1,9 @@
 package boardgame;
 
+/**
+ * @author ratzupaltuff
+ *
+ */
 public class Board {
     private Player[] players;
     private int turnOfPlayerNumber;
@@ -8,7 +12,7 @@ public class Board {
      * 
      */
     public Board() {
-        Player[] players = {new Player(0), new Player(1), new Player(2), new Player(3) };
+        Player[] players = { new Player(0), new Player(1), new Player(2), new Player(3) };
         this.players = players;
         turnOfPlayerNumber = 0;
     }
@@ -37,7 +41,7 @@ public class Board {
      * @param playerNr which player should be returned?
      * @return the player that matches the playerNr
      */
-    public Player getPlayer(int playerNr) {
+    protected Player getPlayer(int playerNr) {
         return players[playerNr];
     }
 
@@ -47,7 +51,7 @@ public class Board {
      * @param tokenNr        number of token to be moved
      * @return whether move was successfully
      */
-    public boolean moveTokenOfPlayerToField(int globalPosition, int playerNr, int tokenNr) {
+    private boolean moveTokenOfPlayerToField(int globalPosition, int playerNr, int tokenNr) {
         if (!isTokenOnFieldforPlayer(globalPosition, playerNr)) {
             players[playerNr].setToken(tokenNr, globalPosition);
             return true;
@@ -58,23 +62,45 @@ public class Board {
     /**
      * 
      */
-    public void endTurn() {
+    private void endTurn() {
         if (turnOfPlayerNumber < 3) {
             turnOfPlayerNumber++;
         } else {
             turnOfPlayerNumber = 0;
-        } 
-        //TODO: check if sombody has won
+        }
+        // TODO: check if sombody has won
     }
 
     /**
-     * @return String with possible moves
+     * @param numberOfSteps check for moves if the dice shows this number (from 1 to
+     *                      6)
+     * @return String with possible moves depending on the steps
      */
-    public String returnPositionsForPlayer() {
-        for (Token token : players[turnOfPlayerNumber].getTokens()) {
-            
+    protected String returnPositionsForPlayer(int numberOfSteps) {
+        boolean thereWasAlreadyANullPosition = false;
+        String returnString = "";
+        returnString += players[turnOfPlayerNumber].checkIfTokenCanBeMovedAndReturnMoveString(0, numberOfSteps);
+        if (players[turnOfPlayerNumber].getTokens()[0].getPosition() == -1) {
+            thereWasAlreadyANullPosition = true;
         }
-        return null;
+        for (int tokenNr = 1; tokenNr < 4; tokenNr++) {
+            if (!thereWasAlreadyANullPosition) {
+
+                returnString += "\n"
+                        + players[turnOfPlayerNumber].checkIfTokenCanBeMovedAndReturnMoveString(tokenNr, numberOfSteps);
+
+                thereWasAlreadyANullPosition = true;
+            } else {
+                if (!(players[turnOfPlayerNumber].getTokens()[tokenNr].getPosition() == -1)) {
+                    returnString += "\n" + players[turnOfPlayerNumber]
+                            .checkIfTokenCanBeMovedAndReturnMoveString(tokenNr, numberOfSteps);
+
+                }
+
+            }
+
+        }
+        return returnString;
     }
 
 }
