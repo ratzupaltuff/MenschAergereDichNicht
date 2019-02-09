@@ -170,6 +170,6 @@ public class Board {
                 return playerNr;
             }
         }
-        return -1;
+        return -1; //Konstante
     }
 }

@@ -7,7 +7,7 @@ enum SpecialPositions {
     /**
      * 
      */
-    start(-1, "S"), a(-5, "A"), b(-4, "B"), c(-3, "C"), d(-2, "D");
+    start(-1, "S"), a(-5, "A"), b(-4, "B"), c(-3, "C"), d(-2, "D"); //a, b, c, d sind keine aussagekräftigen Bezeichner
     private int positionNumber;
     private String representativeLetter;
 

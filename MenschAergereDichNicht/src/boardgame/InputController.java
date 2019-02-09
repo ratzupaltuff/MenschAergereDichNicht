@@ -70,6 +70,50 @@ public class InputController {
         }
     }
 
+
+
+    /**
+     * @param inputArrayString input
+     */
+    //Die else Verzweigungen kann man sich sparen. Macht das Ganze lesbarer.
+    //Nun zu der Exception, was meiner Meinung nach Geschmackssache ist.
+    //Pro: Sollte man die Terminalklasse austauschen wollen, muss man das lediglich in der einen Methode machen,
+    //      die die IllegalArgumentException abfängt
+    //Contra: Exception sollte so früh wie möglich behandelt werden. Also kann man auf die Exception verzichten und direkt die Ausgabe machen.
+
+    public void roll(String[] inputArrayString) throws IllegalArgumentException {
+        if (isGameStarted()) {
+            if (inputArrayString.length == 2) {
+                throw new IllegalArgumentException("you have to specify one value");
+                //oder
+                Terminal.printError("you have to specify one value");
+                return;
+            }
+            if (inputArrayString[1].matches("^[1-6]$")) {
+                throw new IllegalArgumentException("you have to specify a value between one and six");
+            }
+
+
+                    if (game.isRollable()) {
+                        String returnString = game.returnPossibleMoveForPlayer(Integer.parseInt(inputArrayString[1]));
+                        if (!returnString.equals("")) { //Und warum könnte er leer sein?
+                            Terminal.printLine(returnString);
+                        }
+                    } else {
+                        Terminal.printError("you have already rolled the dice");
+                    }
+                } else {
+                    Terminal.printError("you have to specify a value between one and six");
+                }
+            } else {
+                Terminal.printError("you have to specify one value");
+            }
+        } else {
+            Terminal.printError("game is not running");
+        }
+    }
+
+
     /**
      * @param inputArrayString input
      */

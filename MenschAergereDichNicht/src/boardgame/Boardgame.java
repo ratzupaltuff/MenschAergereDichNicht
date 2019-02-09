@@ -20,7 +20,7 @@ public class Boardgame {
      */
     public Boardgame(int[][] startArray) {
         board = new Board();
-        for (int playerNr = 0; playerNr < 4; playerNr++) {
+        for (int playerNr = 0; playerNr < 4; playerNr++) { //4 sollte wieder Konstante sein
             for (int tokenNr = 0; tokenNr < 4; tokenNr++) {
                 board.getPlayer(playerNr).setToken(tokenNr, startArray[playerNr][tokenNr]);
             }
@@ -52,7 +52,7 @@ public class Boardgame {
      * @return true if you can roll the dice
      */
     public boolean isRollable() {
-        if (board.getLastRoll() == 0) {
+        if (board.getLastRoll() == 0) { //Warum == 0???
             return true;
         }
         return false;

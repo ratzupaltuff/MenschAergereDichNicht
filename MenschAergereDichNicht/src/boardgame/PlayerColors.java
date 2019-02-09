@@ -4,6 +4,7 @@ package boardgame;
  * @author ratzupaltuff
  *
  */
+//Ich würde als Name eher PlayerInformation wählen, da du ja nicht nur die Farbe speicherst
 enum PlayerColors {
     /**
      * the four players with color as their names, number as their first value,

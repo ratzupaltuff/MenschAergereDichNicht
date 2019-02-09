@@ -14,6 +14,9 @@ public class Player {
         Token[] tokens = {new Token(), new Token(), new Token(), new Token() };
         this.tokens = tokens;
 
+        //Das finde ich nicht so sinnvoll, du müsstest abprüfen, dass der Konstrukoraufruf nur mit Werten von 0 bis 4 funktioniert.
+        //Oder direkt die PlayerColor im Konstruktor übergeben
+        //Oder mit öffentlichen Konstanten, z.B. public static final int PLAYER_RED = 0;
         switch (playerNr) {
         case 0:
             color = PlayerColors.RED;
@@ -36,6 +39,7 @@ public class Player {
         return tokens;
     }
 
+    //Das rufst du nirgends auf => löschen
     /**
      * @param tokens set tokens of player to this value
      */
@@ -159,6 +163,7 @@ public class Player {
      *         at startingFiled going x steps
      */
     private int getFieldPlusNumber(int startingField, int steps) {
+        //Dafür sollte man Konstanten anlegen, dann kan ich im Nachhinein viel leichter Werte ändern.
         if (startingField >= 0) {
             if (startingField + steps <= 39) {
                 return startingField + steps;
@@ -200,7 +205,7 @@ public class Player {
 
     private String convertLocalPositionToGlobalString(int localPosition) {
         if (localPosition >= 0) {
-            return Integer.toString((localPosition + getOffset()) % 40);
+            return Integer.toString((localPosition + getOffset()) % 40); //40 als Konstante
         } else {
             return Token.getSpecialRepresentativeCharacter(localPosition) + color.getFirstLetterCapsString();
         }
@@ -212,7 +217,7 @@ public class Player {
     public String toString() {
         String returnString;
         returnString = convertLocalPositionToGlobalString(tokens[0].getPosition());
-        for (int tokenNr = 1; tokenNr < 4; tokenNr++) {
+        for (int tokenNr = 1; tokenNr < 4; tokenNr++) { //Warum <4? entweder tokens.length verwenden oder Konstante
             returnString += "," + convertLocalPositionToGlobalString(tokens[tokenNr].getPosition());
         }
         return returnString;
